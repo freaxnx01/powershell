@@ -9,3 +9,8 @@ function New-TemporaryDirectory
     [string] $name = [System.Guid]::NewGuid()
     New-Item -ItemType Directory -Path (Join-Path $parent $name)
 }
+
+function Get-Guid
+{
+	return [System.Guid]::NewGuid()
+}

@@ -1,5 +1,3 @@
-$MyInvocation
-
 # Profile
 $fileName = "Microsoft.PowerShell_profile.ps1"
 $target = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\$fileName"

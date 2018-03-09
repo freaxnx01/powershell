@@ -1,8 +1,15 @@
 $MyInvocation
 
-# Profile
+# Profile System
 $fileName = "Microsoft.PowerShell_profile.ps1"
 $target = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\$fileName"
+if ((Test-Path $target) -eq $false) {
+	New-Item -ItemType SymbolicLink -Path $target -Value $fileName
+}
+
+# Profile Documents
+$fileName = "Microsoft.PowerShell_profile.ps1"
+$target = "$env:USERPROFILE\Documents\WindowsPowerShell\$fileName"
 if ((Test-Path $target) -eq $false) {
 	New-Item -ItemType SymbolicLink -Path $target -Value $fileName
 }

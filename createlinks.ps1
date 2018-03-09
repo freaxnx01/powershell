@@ -27,5 +27,5 @@ if ((Test-Path $target) -eq $false) {
 	New-Item -ItemType SymbolicLink -Path $target -Value $directoryName
 }
 
-Write-Host "Press any key to continue..."
+Write-Host "Press any key to continue...."
 [void][System.Console]::ReadKey($true)

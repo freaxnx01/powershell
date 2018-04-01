@@ -27,3 +27,30 @@ function Install-OpenHereAsAdministrator
 		Set-ItemProperty -Name HasLUAShield -Value ''
 	}
 }
+
+function Get-ProgramFilesExecutable($1)
+{
+	$fullPath = Join-Path -Path ${env:ProgramFiles} -ChildPath $1
+	if (Test-Path $fullPath)
+	{
+		return "$fullPath";
+	}
+	
+	$fullPath = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath $1
+	if (Test-Path $fullPath)
+	{
+		return "$fullPath";
+	}
+	
+	return $null;
+}
+
+function Disable-HyperV
+{
+	Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+}
+
+function Enable-HyperV
+{
+	Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+}

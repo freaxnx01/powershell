@@ -2,6 +2,14 @@
 	PowerShell Profile
 #>
 
+# Import modules
+$profileDirectoryPath = Split-Path $profile
+$myModulesDirectoryPath = Join-Path $profileDirectoryPath 'mymodules'
+Get-ChildItem $myModulesDirectoryPath -Filter *.psm1 |
+ForEach-Object {
+	Import-Module $_.FullName
+}
+
 $customMarker = "<custom>"
 $workingDirC = "C:\Transfer"
 $workingDirD = "D:\Transfer"
@@ -25,6 +33,11 @@ function fcdparent
 }
 Set-Alias -Name .. -Value fcdparent -Description $customMarker
 
+# edit
+
+$cmd = Get-ProgramFilesExecutable('Notepad++\notepad++.exe')
+Set-Alias -Name edit -Value $cmd -Description $customMarker
+
 # ll
 Set-Alias -Name ll -Value Get-ChildItem -Description $customMarker
 
@@ -34,9 +47,6 @@ function dirwide
   Get-ChildItem | Format-Wide
 }
 Set-Alias -Name dirw -Value dirwide -Description $customMarker
-
-# edit
-Set-Alias -Name edit -Value "${env:ProgramFiles(x86)}\notepad++\notepad++.exe" -Description $customMarker
  
 # mkdir & cd
 function fmkdirandcd($1)
@@ -52,14 +62,6 @@ function flistcustomaliases
   alias | Where-Object {$_.Description -Match $customMarker}
 }
 Set-Alias -Name aliascust -Value flistcustomaliases -Description $customMarker
-
-# Import modules
-$profileDirectoryPath = Split-Path $profile
-$myModulesDirectoryPath = Join-Path $profileDirectoryPath 'mymodules'
-Get-ChildItem $myModulesDirectoryPath -Filter *.psm1 |
-ForEach-Object {
-	Import-Module $_.FullName
-}
 
 # working dir
 if (IsWindows)

@@ -28,18 +28,15 @@ Set-Alias -Name .. -Value fcdparent -Description $customMarker
 # ll
 Set-Alias -Name ll -Value Get-ChildItem -Description $customMarker
 
-if (IsWindows)
+# dirw
+function dirwide
 {
-  # Notepad++
-  function fnp++
-  {
-    start "${env:ProgramFiles(x86)}\notepad++\notepad++.exe"
-  }
-  Set-Alias -Name np++ -Value fnp++ -Description $customMarker
-
-  # Notepad
-  Set-Alias -Name np -Value notepad -Description $customMarker
+  Get-ChildItem | Format-Wide
 }
+Set-Alias -Name dirw -Value dirwide -Description $customMarker
+
+# edit
+Set-Alias -Name edit -Value "${env:ProgramFiles(x86)}\notepad++\notepad++.exe" -Description $customMarker
  
 # mkdir & cd
 function fmkdirandcd($1)

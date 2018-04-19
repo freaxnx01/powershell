@@ -47,10 +47,10 @@ function Get-ProgramFilesExecutable($1)
 
 function Disable-HyperV
 {
-	Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+	Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
 }
 
 function Enable-HyperV
 {
-	Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+	Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
 }

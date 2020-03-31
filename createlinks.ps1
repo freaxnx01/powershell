@@ -1,3 +1,6 @@
+# PowerShell 7
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\Documents\PowerShell\"
+
 # Profile System
 $fileName = "Microsoft.PowerShell_profile.ps1"
 $target = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\$fileName"
@@ -34,7 +37,7 @@ if ((Test-Path $target) -eq $false) {
 	New-Item -ItemType SymbolicLink -Path $target -Value $directoryName
 }
 
-# mymodules
+# mymodules, PowerShell 7
 $directoryName = "mymodules"
 $target = "$env:USERPROFILE\Documents\PowerShell\$directoryName"
 if ((Test-Path $target) -eq $false) {

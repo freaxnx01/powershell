@@ -14,6 +14,19 @@ $customMarker = "<custom>"
 $workingDirC = "C:\Transfer"
 $workingDirD = "D:\Transfer"
 
+# Docker alias
+Set-Alias -Name dps -Value Get-ListOfContainer -Description $customMarker
+Set-Alias -Name up -Value Invoke-ComposeUp -Description $customMarker
+Set-Alias -Name down -Value Invoke-ComposeDown -Description $customMarker
+Set-Alias -Name remove -Value Invoke-ComposeRemove -Description $customMarker
+Set-Alias -Name stop -Value Invoke-ComposeStop -Description $customMarker
+Set-Alias -Name dip -Value Get-ContainerIPAddress -Description $customMarker
+Set-Alias -Name dstop -Value Invoke-ContainerStop -Description $customMarker
+Set-Alias -Name drm -Value Invoke-ContainerRemove -Description $customMarker
+Set-Alias -Name dlog -Value Invoke-ContainerLog -Description $customMarker
+Set-Alias -Name dconn -Value Invoke-ContainerConnect -Description $customMarker
+Set-Alias -Name dfimage -Value Invoke-DockerfileImage -Description $customMarker
+
 # OS
 function IsWindows
 {

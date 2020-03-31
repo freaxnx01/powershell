@@ -12,6 +12,13 @@ if ((Test-Path $target) -eq $false) {
 	New-Item -ItemType SymbolicLink -Path $target -Value $fileName
 }
 
+# Profile Documents, PowerShell 7
+$fileName = "Microsoft.PowerShell_profile.ps1"
+$target = "$env:USERPROFILE\Documents\PowerShell\$fileName"
+if ((Test-Path $target) -eq $false) {
+	New-Item -ItemType SymbolicLink -Path $target -Value $fileName
+}
+
 # Profile VSCode
 $fileName = "Microsoft.PowerShell_profile.ps1"
 $targetFileName = "Microsoft.VSCode_profile.ps1"
@@ -23,6 +30,13 @@ if ((Test-Path $target) -eq $false) {
 # mymodules
 $directoryName = "mymodules"
 $target = "$env:USERPROFILE\Documents\WindowsPowerShell\$directoryName"
+if ((Test-Path $target) -eq $false) {
+	New-Item -ItemType SymbolicLink -Path $target -Value $directoryName
+}
+
+# mymodules
+$directoryName = "mymodules"
+$target = "$env:USERPROFILE\Documents\PowerShell\$directoryName"
 if ((Test-Path $target) -eq $false) {
 	New-Item -ItemType SymbolicLink -Path $target -Value $directoryName
 }

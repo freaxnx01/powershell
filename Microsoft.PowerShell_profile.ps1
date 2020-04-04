@@ -26,6 +26,7 @@ Set-Alias -Name drm -Value Invoke-ContainerRemove -Description $customMarker
 Set-Alias -Name dlog -Value Invoke-ContainerLog -Description $customMarker
 Set-Alias -Name dconn -Value Invoke-ContainerConnect -Description $customMarker
 Set-Alias -Name dfimage -Value Invoke-DockerfileImage -Description $customMarker
+Set-Alias -Name dstats -Value Get-DockerStats -Description $customMarker
 
 # OS
 function IsWindows

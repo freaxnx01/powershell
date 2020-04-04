@@ -68,3 +68,8 @@ function Invoke-ContainerConnect
 	)
 	& docker exec -it $id /bin/bash
 }
+
+function Get-DockerStats
+{
+	docker stats
+}

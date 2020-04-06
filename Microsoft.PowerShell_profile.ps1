@@ -16,6 +16,7 @@ $workingDirD = "D:\Transfer"
 
 # Docker alias
 Set-Alias -Name dps -Value Get-ListOfContainer -Description $customMarker
+Set-Alias -Name dcps -Value Get-ComposePs -Description $customMarker
 Set-Alias -Name up -Value Invoke-ComposeUp -Description $customMarker
 Set-Alias -Name down -Value Invoke-ComposeDown -Description $customMarker
 Set-Alias -Name remove -Value Invoke-ComposeRemove -Description $customMarker

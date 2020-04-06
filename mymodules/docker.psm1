@@ -22,6 +22,11 @@ function Invoke-ComposeStop
 	docker-compose stop
 }
 
+function Get-ComposePs
+{
+	docker-compose ps
+}
+
 function Get-ContainerIPAddress {
 	param (
 		[string] $id

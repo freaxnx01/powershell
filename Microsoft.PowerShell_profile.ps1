@@ -78,6 +78,21 @@ function flistcustomaliases
 }
 Set-Alias -Name aliascust -Value flistcustomaliases -Description $customMarker
 
+# gitignore
+Function GitIgnore {
+  param(
+    [Parameter(Mandatory=$true)]
+    [string[]]$list
+  )
+  $params = ($list | ForEach-Object { [uri]::EscapeDataString($_) }) -join ","
+  Invoke-WebRequest -Uri "https://www.toptal.com/developers/gitignore/api/$params" | select -ExpandProperty content | Out-File -FilePath $(Join-Path -path $pwd -ChildPath ".gitignore") -Encoding ascii
+}
+function GitIgnoreCSharp
+{
+  GitIgnore csharp,visualstudio,visualstudiocode,rider
+}
+Set-Alias -Name gics -Value GitIgnoreCSharp -Description $customMarker
+
 # working dir
 if (IsWindows)
 {

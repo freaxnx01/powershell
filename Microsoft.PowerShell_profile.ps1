@@ -29,6 +29,8 @@ Set-Alias -Name dconn -Value Invoke-ContainerConnect -Description $customMarker
 Set-Alias -Name dfimage -Value Invoke-DockerfileImage -Description $customMarker
 Set-Alias -Name dstats -Value Get-DockerStats -Description $customMarker
 
+Set-Alias grep Select-String
+
 # OS
 function IsWindows
 {

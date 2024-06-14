@@ -132,6 +132,23 @@ Set-Alias -Name .. -Value fcdparent -Description $customMarker
 
 # edit
 
+function Get-ProgramFilesExecutable($1)
+{
+	$fullPath = Join-Path -Path ${env:ProgramFiles} -ChildPath $1
+	if (Test-Path $fullPath)
+	{
+		return "$fullPath";
+	}
+	
+	$fullPath = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath $1
+	if (Test-Path $fullPath)
+	{
+		return "$fullPath";
+	}
+	
+	return $null;
+}
+
 $cmd = Get-ProgramFilesExecutable('Notepad++\notepad++.exe')
 Set-Alias -Name edit -Value $cmd -Description $customMarker
 
@@ -154,11 +171,18 @@ function fmkdirandcd($1)
 Set-Alias -Name mkcdir -Value fmkdirandcd -Description $customMarker
 
 # list custom aliases
+
 function flistcustomaliases
 {
-  alias | Where-Object {$_.Description -Match $customMarker}
+  flistcustomaliasesForMarker $customMarker
+}
+
+function flistcustomaliasesForMarker($customMarkerArg)
+{
+  alias | Where-Object {$_.Description -Match $customMarkerArg}
 }
 Set-Alias -Name aliascust -Value flistcustomaliases -Description $customMarker
+Set-Alias -Name List-Custom-Aliases -Value aliascust -Description $customMarker
 
 # gitignore
 Function GitIgnore {

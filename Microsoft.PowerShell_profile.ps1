@@ -306,7 +306,7 @@ function StartOrStopServiceAndWait($serviceName, $targetStatus)
 		$searchStatus = "Running"
 	}
 
-	Write-Host $searchStatus
+	#Write-Host $searchStatus
 
 	do
 	{

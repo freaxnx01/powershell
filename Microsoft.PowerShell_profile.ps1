@@ -318,4 +318,12 @@ function StartOrStopServiceAndWait($serviceName, $targetStatus)
 
 
 # oh-my-posh
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/freax.json" | Invoke-Expression
+
+$ohMyPoshConfigFile = "$env:POSH_THEMES_PATH/freax.json"
+
+if (-Not (Test-Path $ohMyPoshConfigFile))
+{
+	Invoke-WebRequest -Uri https://raw.githubusercontent.com/freaxnx01/config/main/oh-my-posh/freax.json -OutFile $ohMyPoshConfigFile
+}
+
+oh-my-posh init pwsh --config "$ohMyPoshConfigFile" | Invoke-Expression

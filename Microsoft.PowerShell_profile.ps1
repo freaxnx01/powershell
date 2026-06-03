@@ -150,7 +150,7 @@ function Get-ProgramFilesExecutable($1)
 }
 
 $cmd = Get-ProgramFilesExecutable('Notepad++\notepad++.exe')
-Set-Alias -Name edit -Value $cmd -Description $customMarker
+if ($cmd) { Set-Alias -Name edit -Value $cmd -Description $customMarker }
 
 # ll
 Set-Alias -Name ll -Value Get-ChildItem -Description $customMarker
@@ -317,6 +317,28 @@ function StartOrStopServiceAndWait($serviceName, $targetStatus)
 }
 
 
+# direnv - per-directory env vars from .envrc
+# Use Git for Windows' inner bash so .envrc runs in a bash context on Windows.
+if (Get-Command direnv -ErrorAction SilentlyContinue) {
+	$gitBash = 'C:\Program Files\Git\usr\bin\bash.exe'
+	if (Test-Path $gitBash) { $env:DIRENV_BASH = $gitBash }
+	Invoke-Expression (& { (direnv hook pwsh | Out-String) })
+	# MSYS2 bash converts PATH to POSIX format (colon-separated, /c/...) on every
+	# dir change, which breaks Win32 process lookup. Append a second LocationChanged
+	# handler that runs cygpath -w -p to convert it back to Windows format.
+	$ExecutionContext.SessionState.InvokeCommand.LocationChangedAction = [Delegate]::Combine(
+		$ExecutionContext.SessionState.InvokeCommand.LocationChangedAction,
+		[System.EventHandler[System.Management.Automation.LocationChangedEventArgs]] {
+			param([object] $src, [System.Management.Automation.LocationChangedEventArgs] $e)
+			end {
+				if ($env:PATH -match '^/') {
+					$env:PATH = (& 'C:\Program Files\Git\usr\bin\cygpath.exe' -w -p $env:PATH).Trim()
+				}
+			}
+		}
+	)
+}
+
 # oh-my-posh
 
 $ohMyPoshConfigFile = "$env:POSH_THEMES_PATH/freax.json"
@@ -326,4 +348,6 @@ if (-Not (Test-Path $ohMyPoshConfigFile))
 	Invoke-WebRequest -Uri https://raw.githubusercontent.com/freaxnx01/config/main/oh-my-posh/freax.json -OutFile $ohMyPoshConfigFile
 }
 
-oh-my-posh init pwsh --config "$ohMyPoshConfigFile" | Invoke-Expression
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+	oh-my-posh init pwsh --config "$ohMyPoshConfigFile" | Invoke-Expression
+}

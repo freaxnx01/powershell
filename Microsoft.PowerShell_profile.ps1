@@ -318,25 +318,49 @@ function StartOrStopServiceAndWait($serviceName, $targetStatus)
 
 
 # direnv - per-directory env vars from .envrc
-# Use Git for Windows' inner bash so .envrc runs in a bash context on Windows.
+# Run .envrc through Git for Windows' bash, and register our own LocationChanged
+# handler (instead of `direnv hook pwsh`) so we can repair direnv's Windows export.
 if (Get-Command direnv -ErrorAction SilentlyContinue) {
 	$gitBash = 'C:\Program Files\Git\usr\bin\bash.exe'
 	if (Test-Path $gitBash) { $env:DIRENV_BASH = $gitBash }
-	Invoke-Expression (& { (direnv hook pwsh | Out-String) })
-	# MSYS2 bash converts PATH to POSIX format (colon-separated, /c/...) on every
-	# dir change, which breaks Win32 process lookup. Append a second LocationChanged
-	# handler that runs cygpath -w -p to convert it back to Windows format.
-	$ExecutionContext.SessionState.InvokeCommand.LocationChangedAction = [Delegate]::Combine(
-		$ExecutionContext.SessionState.InvokeCommand.LocationChangedAction,
-		[System.EventHandler[System.Management.Automation.LocationChangedEventArgs]] {
-			param([object] $src, [System.Management.Automation.LocationChangedEventArgs] $e)
-			end {
-				if ($env:PATH -match '^/') {
-					$env:PATH = (& 'C:\Program Files\Git\usr\bin\cygpath.exe' -w -p $env:PATH).Trim()
-				}
+
+	# `direnv export pwsh` emits both `${env:NAME}='...'` and `Remove-Item env:/Name`
+	# for vars whose case it normalised (Path->PATH, ComSpec->COMSPEC, ...). On
+	# case-insensitive Windows those hit the SAME variable, and because Go's map
+	# order is random the Remove sometimes runs after the Set and nulls it -> PATH
+	# (hence cmd/git/oh-my-posh's git segment) disappears. Strip every Remove that
+	# has a matching Set (case-insensitively); leave genuine unsets intact. Also
+	# convert a POSIX PATH back to Windows form if MSYS2 ever hands one back.
+	$global:__DirenvApply = {
+		$export = (& { (direnv export pwsh | Out-String) })
+		if ($export) {
+			$setNames = @([regex]::Matches($export, '\$\{env:([^}]+)\}=') |
+				ForEach-Object { $_.Groups[1].Value.ToLower() })
+			$export = [regex]::Replace($export, "Remove-Item -LiteralPath 'env:/([^']+)';", {
+				param($m)
+				if ($setNames -contains $m.Groups[1].Value.ToLower()) { '' } else { $m.Value }
+			})
+			Invoke-Expression $export
+			if ($env:PATH -match '^/') {
+				$env:PATH = (& 'C:\Program Files\Git\usr\bin\cygpath.exe' -w -p $env:PATH).Trim()
 			}
 		}
-	)
+	}
+
+	$direnvHook = [System.EventHandler[System.Management.Automation.LocationChangedEventArgs]] {
+		param([object] $src, [System.Management.Automation.LocationChangedEventArgs] $e)
+		end { & $global:__DirenvApply }
+	}
+	$existing = $ExecutionContext.SessionState.InvokeCommand.LocationChangedAction
+	if ($existing) {
+		$ExecutionContext.SessionState.InvokeCommand.LocationChangedAction = [Delegate]::Combine($existing, $direnvHook)
+	} else {
+		$ExecutionContext.SessionState.InvokeCommand.LocationChangedAction = $direnvHook
+	}
+
+	# LocationChangedAction fires only on cd, not at launch, so run once now in case
+	# the terminal was opened directly inside a direnv directory.
+	& $global:__DirenvApply
 }
 
 # oh-my-posh
